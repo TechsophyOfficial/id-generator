@@ -64,8 +64,8 @@ public class IdGeneratorImpl
 
         lastTimestamp = currentTimestamp;
         long id=currentTimestamp << (NODE_ID_BITS + SEQUENCE_BITS)
-                          | (nodeId << SEQUENCE_BITS)
-                          | minSequence;
+                | (nodeId << SEQUENCE_BITS)
+                | minSequence;
         return BigInteger.valueOf(id);
     }
 

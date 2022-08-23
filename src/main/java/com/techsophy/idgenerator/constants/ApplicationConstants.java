@@ -8,7 +8,7 @@ public class ApplicationConstants
 
     // DB Constants
     public static final String SEQUENCE_COLLECTION_NAME = "pcil_sequence_id";
-    public static final String _ID = "_id";
+    public static final String ID = "_id";
     public static final String SALES_QUOTE_SEQ = "salesQuoteSequence";
     public static final String SALES_ORDER_SEQ = "salesOrderSequence";
 

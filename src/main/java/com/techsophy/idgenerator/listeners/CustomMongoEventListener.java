@@ -26,11 +26,57 @@ public class CustomMongoEventListener extends AbstractMongoEventListener<Object>
     private final ObjectMapper objectMapper;
 
     // TODO: Generify the validations & id-generator
+
+    private void formatUniqueId(Map<String, Object> formData, String formId, BeforeConvertEvent<Object> event){
+
+        String oaBranch;
+        Object sequenceId;
+        String key = SALES_QUOTE_ID;
+        if(SALES_QUOTE_FORM_ID.equals(formId))
+        {
+            log.info("FormId matches SalesQuoteFormId");
+            oaBranch = ((Map<?, ?>)formData.get(SALES_QUOTE)).get(OA_BRANCH).toString();
+            sequenceId = SequenceIdUtils.addDigitToSequenceId(mongoService.getNextSequence(oaBranch, SALES_QUOTE_SEQ).toString(), 5, "0");
+        }
+        else
+        {
+            log.info("FormId matches SalesOrderFormId");
+            oaBranch = ((Map<?, ?>)formData.get(SALES_ORDER)).get(OA_BRANCH).toString();
+            key = SALES_ORDER_ID;
+            sequenceId = SequenceIdUtils.addDigitToSequenceId(mongoService.getNextSequence(oaBranch, SALES_ORDER_SEQ).toString(), 6, "0");
+        }
+
+        int month = LocalDate.now().getMonthValue();
+        int year = LocalDate.now().getYear();
+        if (month <= 3)
+        {
+            --year;
+        }
+        String uniqueId = new StringBuilder().append(oaBranch)
+                .append(String.format("%02d", month))
+                .append(String.format("%02d", year%100))
+                .append(sequenceId).toString();
+        log.info(key+" : "+uniqueId);
+        formData.put(key, uniqueId);
+        try {
+            log.info(objectMapper.writeValueAsString(formData));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        ((Map<String, Object>) event.getSource()).put(FORM_DATA,formData);
+        try {
+            log.info(objectMapper.writeValueAsString(event.getSource()));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void onBeforeConvert(BeforeConvertEvent<Object> event)
     {
         log.info("Mongo Event Listener Called");
-        if(event.getSource() instanceof Map && ((Map<?, ?>) event.getSource()).containsKey(FORM_ID))
+        //if(event.getSource() instanceof Map && ((Map<?, ?>) event.getSource()).containsKey(FORM_ID))
+        if(((Map<?, ?>) event.getSource()).containsKey(FORM_ID))
         {
             Map<String, Object> source = (Map) event.getSource();
             String formId = source.get(ApplicationConstants.FORM_ID).toString();
@@ -44,45 +90,46 @@ public class CustomMongoEventListener extends AbstractMongoEventListener<Object>
                     if (!(formData.containsKey(SALES_QUOTE_ID) || formData.containsKey(SALES_ORDER_ID)))
                     {
                         log.info("FormData does not contain SalesQuoteId & SalesOrderId");
-                        String oaBranch;
-                        Object sequenceId;
-                        String key = SALES_QUOTE_ID;
-                        if(SALES_QUOTE_FORM_ID.equals(formId))
-                        {
-                            log.info("FormId matches SalesQuoteFormId");
-                            oaBranch = ((Map<?, ?>)formData.get(SALES_QUOTE)).get(OA_BRANCH).toString();
-                            sequenceId = SequenceIdUtils.addDigitToSequenceId(mongoService.getNextSequence(oaBranch, SALES_QUOTE_SEQ).toString(), 5, "0");
-                        }
-                        else
-                        {
-                            log.info("FormId matches SalesOrderFormId");
-                            oaBranch = ((Map<?, ?>)formData.get(SALES_ORDER)).get(OA_BRANCH).toString();
-                            key = SALES_ORDER_ID;
-                            sequenceId = SequenceIdUtils.addDigitToSequenceId(mongoService.getNextSequence(oaBranch, SALES_ORDER_SEQ).toString(), 6, "0");
-                        }
-                        int month = LocalDate.now().getMonthValue();
-                        int year = LocalDate.now().getYear();
-                        if (month <= 3)
-                        {
-                            --year;
-                        }
-                        String uniqueId = new StringBuilder().append(oaBranch)
-                                .append(String.format("%02d", month))
-                                .append(String.format("%02d", year%100))
-                                .append(sequenceId).toString();
-                        log.info(key+" : "+uniqueId);
-                        formData.put(key, uniqueId);
-                        try {
-                            log.info(objectMapper.writeValueAsString(formData));
-                        } catch (JsonProcessingException e) {
-                            e.printStackTrace();
-                        }
-                        ((Map<String, Object>) event.getSource()).put(FORM_DATA,formData);
-                        try {
-                            log.info(objectMapper.writeValueAsString(event.getSource()));
-                        } catch (JsonProcessingException e) {
-                            e.printStackTrace();
-                        }
+//                        String oaBranch;
+//                        Object sequenceId;
+//                        String key = SALES_QUOTE_ID;
+//                        if(SALES_QUOTE_FORM_ID.equals(formId))
+//                        {
+//                            log.info("FormId matches SalesQuoteFormId");
+//                            oaBranch = ((Map<?, ?>)formData.get(SALES_QUOTE)).get(OA_BRANCH).toString();
+//                            sequenceId = SequenceIdUtils.addDigitToSequenceId(mongoService.getNextSequence(oaBranch, SALES_QUOTE_SEQ).toString(), 5, "0");
+//                        }
+//                        else
+//                        {
+//                            log.info("FormId matches SalesOrderFormId");
+//                            oaBranch = ((Map<?, ?>)formData.get(SALES_ORDER)).get(OA_BRANCH).toString();
+//                            key = SALES_ORDER_ID;
+//                            sequenceId = SequenceIdUtils.addDigitToSequenceId(mongoService.getNextSequence(oaBranch, SALES_ORDER_SEQ).toString(), 6, "0");
+//                        }
+//                        int month = LocalDate.now().getMonthValue();
+//                        int year = LocalDate.now().getYear();
+//                        if (month <= 3)
+//                        {
+//                            --year;
+//                        }
+//                        String uniqueId = new StringBuilder().append(oaBranch)
+//                                .append(String.format("%02d", month))
+//                                .append(String.format("%02d", year%100))
+//                                .append(sequenceId).toString();
+//                        log.info(key+" : "+uniqueId);
+//                        formData.put(key, uniqueId);
+//                        try {
+//                            log.info(objectMapper.writeValueAsString(formData));
+//                        } catch (JsonProcessingException e) {
+//                            e.printStackTrace();
+//                        }
+//                        ((Map<String, Object>) event.getSource()).put(FORM_DATA,formData);
+//                        try {
+//                            log.info(objectMapper.writeValueAsString(event.getSource()));
+//                        } catch (JsonProcessingException e) {
+//                            e.printStackTrace();
+//                        }
+                        formatUniqueId(formData, formId, event);
                     }
                 }
             }
