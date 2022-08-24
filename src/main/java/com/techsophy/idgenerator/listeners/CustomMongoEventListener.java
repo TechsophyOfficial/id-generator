@@ -76,19 +76,16 @@ public class CustomMongoEventListener extends AbstractMongoEventListener<Object>
     {
         log.info("Mongo Event Listener Called");
         //if(event.getSource() instanceof Map && ((Map<?, ?>) event.getSource()).containsKey(FORM_ID))
-        if(((Map<?, ?>) event.getSource()).containsKey(FORM_ID))
-        {
+        if(((Map<?, ?>) event.getSource()).containsKey(FORM_ID)) {
             Map<String, Object> source = (Map) event.getSource();
             String formId = source.get(ApplicationConstants.FORM_ID).toString();
-            log.info("FormId : "+formId);
-            if (SALES_QUOTE_FORM_ID.equals(formId) || SALES_ORDER_FORM_ID.equals(formId))
-            {
+            log.info("FormId : " + formId);
+            if (SALES_QUOTE_FORM_ID.equals(formId) || SALES_ORDER_FORM_ID.equals(formId)) {
                 log.info("FormID matches Sales Quote or SalesOrder formId");
-                if (source.get(FORM_DATA) instanceof Map)
-                {
-                    Map<String, Object> formData = objectMapper.convertValue(source.get(FORM_DATA), new TypeReference<>() {});
-                    if (!(formData.containsKey(SALES_QUOTE_ID) || formData.containsKey(SALES_ORDER_ID)))
-                    {
+                if (source.get(FORM_DATA) instanceof Map) {
+                    Map<String, Object> formData = objectMapper.convertValue(source.get(FORM_DATA),
+                            new TypeReference<>() {});
+                    if (!(formData.containsKey(SALES_QUOTE_ID) || formData.containsKey(SALES_ORDER_ID))) {
                         log.info("FormData does not contain SalesQuoteId & SalesOrderId");
 //                        String oaBranch;
 //                        Object sequenceId;
