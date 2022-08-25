@@ -43,7 +43,8 @@ public class MongoServiceImpl implements MongoService
         }
         Update update = new Update();
         update.inc(column, 1);
-        DBObject obj =  mongoTemplate.findAndModify(query, update, new FindAndModifyOptions().returnNew(true), BasicDBObject.class, ApplicationConstants.SEQUENCE_COLLECTION_NAME);
+        DBObject obj =  mongoTemplate.findAndModify(query, update, new FindAndModifyOptions().returnNew(true),
+                BasicDBObject.class, ApplicationConstants.SEQUENCE_COLLECTION_NAME);
         if(obj == null)
         {
             throw new SequenceGenerationException(SEQUENCE_GENERATION_EXCEPTION);
