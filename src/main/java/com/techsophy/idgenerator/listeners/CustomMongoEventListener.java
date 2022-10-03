@@ -26,6 +26,7 @@ public class CustomMongoEventListener extends AbstractMongoEventListener<Object>
     private final ObjectMapper objectMapper;
 
     // TODO: Generify the validations & id-generator
+
     @Override
     public void onBeforeConvert(BeforeConvertEvent<Object> event)
     {
