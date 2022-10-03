@@ -24,8 +24,6 @@ public class CustomMongoEventListener extends AbstractMongoEventListener<Object>
     private final MongoService mongoService;
     private final ObjectMapper objectMapper;
 
-    // TODO: Generify the validations & id-generator
-
     private void formatUniqueId(Map<String, Object> formData, String formId, BeforeConvertEvent<Object> event) {
 
         String oaBranch;

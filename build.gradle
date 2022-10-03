@@ -32,20 +32,32 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.data:spring-data-mongodb:3.1.8'
-    implementation 'org.springframework:spring-web:5.3.6'
-    implementation 'org.springframework:spring-webmvc:5.3.6'
+    implementation 'org.springframework.data:spring-data-mongodb:3.4.2'
+    implementation 'org.springframework:spring-web:5.3.22'
+    implementation 'org.springframework:spring-webmvc:5.3.22'
 
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.4'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.4'
 
-    compileOnly 'org.projectlombok:lombok:1.18.20'
-    annotationProcessor 'org.projectlombok:lombok:1.18.20'
-    testCompileOnly 'org.projectlombok:lombok:1.18.20'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
-
-    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.3.2.RELEASE'
+    compileOnly 'org.projectlombok:lombok:1.18.24'
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
+    testCompileOnly 'org.projectlombok:lombok:1.18.24'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.7.3'
+    testImplementation 'org.mongodb:mongo-java-driver:3.12.11'
 
 }
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.85
+            }
+        }
+
+    }
+}
+check.dependsOn jacocoTestCoverageVerification
 
 publishing {
     publications {
