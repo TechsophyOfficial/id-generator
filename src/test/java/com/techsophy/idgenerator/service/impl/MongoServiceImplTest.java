@@ -2,7 +2,6 @@ package com.techsophy.idgenerator.service.impl;
 
 import com.mongodb.BasicDBObject;
 import com.techsophy.idgenerator.constants.ApplicationConstants;
-import com.techsophy.idgenerator.exception.SequenceGenerationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,6 +42,6 @@ class MongoServiceImplTest {
         Mockito.when(mongoTemplate.findAndModify(query, update, new FindAndModifyOptions().returnNew(true),
                 BasicDBObject.class, ApplicationConstants.SEQUENCE_COLLECTION_NAME)).thenReturn(null);
 
-        Assertions.assertThrows(SequenceGenerationException.class, () -> mongoServiceImpl.getNextSequence(ID, SALES_ORDER_SEQ));
+        Assertions.assertThrows(RuntimeException.class, () -> mongoServiceImpl.getNextSequence(_ID, SALES_ORDER_SEQ));
     }
 }
