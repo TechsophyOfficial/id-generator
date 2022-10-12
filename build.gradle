@@ -89,9 +89,9 @@ publishing {
 
                 developers {
                     developer {
-                        id = 'shashwatsinha'
-                        name = 'Shashwat Sinha'
-                        email = 'Shashwat.s@techsophy.com'
+                        id = 'techsophyofficial'
+                        name = 'Awgment owners'
+                        email = 'awgment@techsophy.com'
                     }
 
                     scm {
