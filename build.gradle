@@ -32,11 +32,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.data:spring-data-mongodb:3.1.8'
-    implementation 'org.springframework:spring-web:5.3.6'
-    implementation 'org.springframework:spring-webmvc:5.3.6'
 
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.4'
     compileOnly 'org.projectlombok:lombok:1.18.20'
     annotationProcessor 'org.projectlombok:lombok:1.18.20'
     testCompileOnly 'org.projectlombok:lombok:1.18.20'
