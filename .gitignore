@@ -5,7 +5,6 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 shashwat sinha_0xB2992FA6_SECRET.pgp
-gradle.properties
 
 ### STS ###
 .apt_generated
