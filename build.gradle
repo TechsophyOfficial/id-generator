@@ -6,6 +6,7 @@ plugins {
     id 'java'
     id 'maven-publish'
     id 'jacoco'
+    id 'signing'
 }
 
 group = 'com.techsophy'
@@ -35,6 +36,11 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.7.3'
 }
 
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
 jacocoTestCoverageVerification {
     violationRules {
         rule {
@@ -45,13 +51,67 @@ jacocoTestCoverageVerification {
 
     }
 }
+
 check.dependsOn jacocoTestCoverageVerification
 
 publishing {
     publications {
         maven(MavenPublication) {
+            groupId = 'com.techsophy'
+            artifactId = 'id-generator'
+            version = '2.0.0'
             from(components.java)
+
+            pom {
+                name = 'id-generator'
+                description = 'id-generator is an open-source Java library which generates unique ids'
+                url = 'https://github.com/TechsophyOfficial/lib-id-generator'
+                inceptionYear = '2021'
+
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'techsophyofficial'
+                        name = 'Awgment owners'
+                        email = 'awgment@techsophy.com'
+                    }
+
+                    scm {
+                        connection = 'scm:git:git://github.com/TechsophyOfficial/lib-id-generator.git'
+                        developerConnection = 'scm:git:ssh://github.com/TechsophyOfficial/lib-id-generator.git'
+                        url = 'https://github.com/TechsophyOfficial/lib-id-generator'
+                    }
+                }
+            }
         }
+    }
+
+
+    repositories {
+        maven {
+            name = "OSSRH"
+            url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+//            credentials {
+//                username = project.properties["ossrhUsername"]
+//                password = project.properties["ossrhPassword"]
+//            }
+        }
+    }
+}
+
+signing {
+    sign publishing.publications.maven
+}
+
+javadoc {
+    if (JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
     }
 }
 

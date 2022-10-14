@@ -4,6 +4,7 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+shashwat sinha_0xB2992FA6_SECRET.pgp
 
 ### STS ###
 .apt_generated
