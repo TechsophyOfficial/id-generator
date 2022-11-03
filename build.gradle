@@ -100,8 +100,8 @@ publishing {
             name = "OSSRH"
             // url = "https://s01.oss.sonatype.org/content/repositories/"
             credentials {
-                username = 'VaibhavTechsophy'
-                password = '^V3DjU7PHjh7Fda'
+                username = System.getenv('OSSRH_USERNAME')
+                password = System.getenv('OSSRH_PASSWORD')
             }
         }
     }
@@ -113,8 +113,8 @@ nexusPublishing {
             //only for users registered in Sonatype after 24 Feb 2021
             nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
             snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
-            username = 'VaibhavTechsophy'
-            password = '^V3DjU7PHjh7Fda'
+            username = System.getenv('OSSRH_USERNAME')
+            password = System.getenv('OSSRH_PASSWORD')
         }
     }
 }
