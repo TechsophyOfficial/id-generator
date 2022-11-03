@@ -1,0 +1,87 @@
+version: 2.1
+
+
+workflows:
+  commit-flow:
+    # when:
+    #   not: << pipeline.git.tag >>
+    jobs:
+      - build:
+          context:
+            - ossContext
+          filters:
+            branches:
+              only: /main/
+            tags:
+              only: /^.*/
+
+# Define a job to be invoked later in a workflow.
+# See: https://circleci.com/docs/2.0/configuration-reference/#jobs
+jobs:
+  build:
+    # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
+    # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
+    docker:
+      # specify the version you desire here
+      - image: cimg/openjdk:11.0.11
+
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # - image: circleci/postgres:9.4
+
+    working_directory: ~/repo
+
+    environment:
+      # Customize the JVM maximum heap limit
+      JVM_OPTS: -Xmx3200m
+      TERM: dumb
+    # Add steps to the job
+    # See: https://circleci.com/docs/2.0/configuration-reference/#steps
+
+
+    steps:
+      - checkout
+      - run:
+          name: permission to graldew
+          command: chmod +x gradlew
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "build.gradle" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+
+      - run: ./gradlew dependencies
+
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: v1-dependencies-{{ checksum "build.gradle" }}
+
+      # run tests!
+      - run:
+          name: identify version
+          command: |
+            if [ $CIRCLE_TAG ]
+            then
+              echo 'export ORG_GRADLE_PROJECT_LIBRARY_VERSION=$CIRCLE_TAG' >> $BASH_ENV
+            else
+              echo "export ORG_GRADLE_PROJECT_LIBRARY_VERSION=`git tag | tail -1`-SNAPSHOT" >> $BASH_ENV
+            fi
+            source $BASH_ENV
+      - run:
+          name: generate keys
+          command: |
+            openssl enc -aes-256-cbc -d -in  private.key.pgp.enc -out private.key.pgp  -k $decryptPassphrase
+            openssl enc -aes-256-cbc -d -in  gradle.properties.enc -out gradle.properties  -k $decryptPassphrase
+      - run:
+          name: Publish to Maven
+          command: |
+            if [ $CIRCLE_TAG ]
+            then
+              ./gradlew clean build  publishToSonatype closeAndReleaseSonatypeStagingRepository
+            else
+              ./gradlew clean build  publishToSonatype closeAndReleaseSonatypeStagingRepository -x signMavenPublication
+            fi
